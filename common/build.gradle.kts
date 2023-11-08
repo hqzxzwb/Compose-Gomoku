@@ -1,5 +1,3 @@
-import org.jetbrains.compose.compose
-
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
@@ -10,12 +8,9 @@ group = "com.example"
 version = "1.0-SNAPSHOT"
 
 kotlin {
+    jvmToolchain(17)
     androidTarget()
-    jvm("desktop") {
-        compilations.all {
-            kotlinOptions.jvmTarget = "11"
-        }
-    }
+    jvm("desktop")
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -31,8 +26,8 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                api("androidx.appcompat:appcompat:1.5.1")
-                api("androidx.core:core-ktx:1.9.0")
+                api("androidx.appcompat:appcompat:1.6.1")
+                api("androidx.core:core-ktx:1.10.0")
             }
         }
         val androidUnitTest by getting {
@@ -50,14 +45,11 @@ kotlin {
 }
 
 android {
-    compileSdkVersion = "android-33"
+    namespace = "com.gomoku.common"
+    compileSdk = 34
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdk = 24
-        targetSdk = 33
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        targetSdk = 34
     }
 }

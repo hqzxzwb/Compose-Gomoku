@@ -1,4 +1,4 @@
-package com.example.android
+package com.gomoku.android
 
 import com.example.common.App
 import android.os.Bundle

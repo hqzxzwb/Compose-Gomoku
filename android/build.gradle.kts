@@ -4,30 +4,27 @@ plugins {
     kotlin("android")
 }
 
-group "com.example"
-version "1.0-SNAPSHOT"
-
-repositories {
-    jcenter()
-}
+group = "com.example"
+version = "1.0-SNAPSHOT"
 
 dependencies {
     implementation(project(":common"))
-    implementation("androidx.activity:activity-compose:1.5.0")
+    implementation("androidx.activity:activity-compose:1.8.0")
 }
 
 android {
-    compileSdkVersion(33)
+    namespace = "com.gomoku.android"
+    compileSdk = 34
     defaultConfig {
-        applicationId = "com.example.android"
-        minSdkVersion(24)
-        targetSdkVersion(33)
+        applicationId = "com.gomoku.android"
+        minSdk = 24
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0-SNAPSHOT"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildTypes {
         getByName("release") {
