@@ -1,3 +1,3 @@
-package com.example.common
+package com.gomoku.common
 
 expect fun getPlatformName(): String

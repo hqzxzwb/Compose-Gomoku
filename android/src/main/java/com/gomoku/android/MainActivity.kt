@@ -1,6 +1,6 @@
 package com.gomoku.android
 
-import com.example.common.App
+import com.gomoku.common.App
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity

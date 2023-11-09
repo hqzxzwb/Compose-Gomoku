@@ -1,4 +1,4 @@
-package com.example.common
+package com.gomoku.common
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
