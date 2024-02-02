@@ -3,22 +3,12 @@ package com.gomoku.common
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -44,8 +34,15 @@ fun App() {
             )
 
             Column {
-                Text("重来", modifier = Modifier.clickable { state.reset() })
-                Text("悔棋", modifier = Modifier.clickable { state.revert() })
+                Button(onClick = { state.reset() }) {
+                    Text("重来")
+                }
+                Button(
+                    onClick = { state.revert() },
+                    enabled = state.revertible,
+                ) {
+                    Text("悔棋")
+                }
                 Text(
                     text = if (state.blackTurn) {
                         "黑方走棋"
@@ -65,7 +62,6 @@ fun GomokuBoard(
     lineColor: Color,
     modifier: Modifier = Modifier,
 ) {
-    state.operationCount
     PadIn(
         modifier = modifier
             .layout { measurable, constraints ->
@@ -155,12 +151,17 @@ class BoardState(
     val height: Int,
 ) {
     var blackTurn by mutableStateOf(true)
-    var operationCount by mutableStateOf(0)
-    val operationStack = ArrayDeque<IntOffset>()
+    private val operationStack = mutableStateListOf<IntOffset>()
 
-    private val grid = Array(width) {
-        IntArray(height) {
-            GridState.Empty.value
+    private val grid = mutableStateListOf<SnapshotStateList<GridState>>().apply {
+        repeat(width) {
+            add(
+                mutableStateListOf<GridState>().apply {
+                    repeat(height) {
+                        add(GridState.Empty)
+                    }
+                }
+            )
         }
     }
 
@@ -173,38 +174,36 @@ class BoardState(
     }
 
     fun emitClick(x: Int, y: Int) {
-        val gridState = grid[x, y]
+        val gridState = grid[x][y]
         if (gridState == GridState.Empty) {
-            grid[x, y] = if (blackTurn) {
+            grid[x][y] = if (blackTurn) {
                 GridState.Black
             } else {
                 GridState.White
             }
             blackTurn = !blackTurn
             operationStack.add(IntOffset(x, y))
-            operationCount++
         }
     }
 
-    val revertable get() = operationStack.isNotEmpty()
+    val revertible get() = operationStack.size > 0
 
     fun revert() {
         if (operationStack.isNotEmpty()) {
             val (x, y) = operationStack.removeLast()
-            grid[x, y] = GridState.Empty
+            grid[x][y] = GridState.Empty
             blackTurn = !blackTurn
-            operationCount++
         }
     }
 
     operator fun get(x: Int, y: Int): GridState {
-        return grid[x, y]
+        return grid[x][y]
     }
 
     fun reset() {
-        grid.forEach { it.fill(GridState.Empty.value) }
+        grid.forEach { it.fill(GridState.Empty) }
+        operationStack.clear()
         blackTurn = true
-        operationCount++
     }
 }
 
