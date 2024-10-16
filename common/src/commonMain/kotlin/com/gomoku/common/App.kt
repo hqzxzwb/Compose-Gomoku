@@ -3,11 +3,25 @@ package com.gomoku.common
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -15,10 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 
 @Composable
-fun App() {
-    val state = BoardState(19, 19)
+fun App(state: BoardState = remember { BoardState(15, 15) }) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -107,6 +121,7 @@ fun GridUi(modifier: Modifier, state: BoardState, x: Int, y: Int, lineColor: Col
             lineColor,
             start = Offset(if (x == 0) size.width / 2 else 0F, size.height / 2),
             end = Offset(if (x == state.width - 1) size.width / 2 else size.width, size.height / 2),
+            strokeWidth = 2.dp.toPx(),
         )
         drawLine(
             lineColor,
@@ -115,6 +130,7 @@ fun GridUi(modifier: Modifier, state: BoardState, x: Int, y: Int, lineColor: Col
                 size.width / 2,
                 if (y == state.height - 1) size.height / 2 else size.height
             ),
+            strokeWidth = 2.dp.toPx(),
         )
         when (gridState) {
             GridState.Black -> drawCircle(
@@ -150,7 +166,7 @@ class BoardState(
     val width: Int,
     val height: Int,
 ) {
-    var blackTurn by mutableStateOf(true)
+    var blackTurn by mutableStateOf(false)
     private val operationStack = mutableStateListOf<IntOffset>()
 
     private val grid = mutableStateListOf<SnapshotStateList<GridState>>().apply {
@@ -186,6 +202,10 @@ class BoardState(
         }
     }
 
+    fun checkWin() {
+        
+    }
+
     val revertible get() = operationStack.size > 0
 
     fun revert() {
@@ -203,7 +223,7 @@ class BoardState(
     fun reset() {
         grid.forEach { it.fill(GridState.Empty) }
         operationStack.clear()
-        blackTurn = true
+        blackTurn = false
     }
 }
 
