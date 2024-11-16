@@ -43,3 +43,6 @@ bin/
 .DS_Store
 
 local.properties
+
+.kotlin
+/kotlin-js-store

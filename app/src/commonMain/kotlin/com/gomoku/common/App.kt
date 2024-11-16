@@ -14,12 +14,16 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import kotlin.jvm.JvmInline
 
 @Composable
-fun App(state: BoardState = remember { BoardState(15, 15) }) {
+fun App(
+    modifier: Modifier = Modifier,
+    state: BoardState = remember { BoardState(15, 15) }
+) {
     var confirmingRestart by remember { mutableStateOf(false) }
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier.fillMaxSize()
