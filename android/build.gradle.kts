@@ -1,7 +1,8 @@
 plugins {
-    id("org.jetbrains.compose")
-    id("com.android.application")
-    kotlin("android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 group = "com.example"
@@ -9,7 +10,7 @@ version = "1.0-SNAPSHOT"
 
 dependencies {
     implementation(project(":common"))
-    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation(libs.androidx.activity.compose)
 }
 
 kotlin {
