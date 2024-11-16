@@ -3,25 +3,9 @@ package com.gomoku.common
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -33,6 +17,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun App(state: BoardState = remember { BoardState(15, 15) }) {
+    var confirmingRestart by remember { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -48,7 +33,7 @@ fun App(state: BoardState = remember { BoardState(15, 15) }) {
             )
 
             Column {
-                Button(onClick = { state.reset() }) {
+                Button(onClick = { confirmingRestart = true }) {
                     Text("重来")
                 }
                 Button(
@@ -67,7 +52,15 @@ fun App(state: BoardState = remember { BoardState(15, 15) }) {
             }
         }
     }
-
+    if (confirmingRestart) {
+        RestartConfirmation(
+            onConfirmation = {
+                state.reset()
+                confirmingRestart = false
+            },
+            onDismissRequest = { confirmingRestart = false },
+        )
+    }
 }
 
 @Composable
@@ -159,6 +152,31 @@ inline fun PadIn(modifier: Modifier, content: @Composable BoxScope.() -> Unit) {
         }
         Spacer(modifier = Modifier.weight(0.05F))
     }
+}
+
+@Composable
+private fun RestartConfirmation(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(onClick = onConfirmation) {
+                Text("确定")
+            }
+        },
+        modifier = modifier,
+        title = {
+            Text(text = "确定要重来吗？")
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text("取消")
+            }
+        },
+    )
 }
 
 @Stable
