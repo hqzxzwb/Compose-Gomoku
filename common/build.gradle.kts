@@ -23,10 +23,6 @@ kotlin {
             api(compose.foundation)
             api(compose.material3)
         }
-        androidMain.dependencies {
-            api("androidx.appcompat:appcompat:1.7.0")
-            api("androidx.core:core-ktx:1.13.1")
-        }
         desktopMain.dependencies {
             api(compose.preview)
         }
@@ -38,7 +34,6 @@ android {
     compileSdk = 34
     defaultConfig {
         minSdk = 24
-        targetSdk = 34
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
