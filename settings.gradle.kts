@@ -9,4 +9,4 @@ pluginManagement {
 
 rootProject.name = "Gomoku"
 
-include(":android", ":desktop", ":common")
+include(":app")
